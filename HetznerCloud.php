@@ -155,9 +155,8 @@ class HetznerCloud extends Server
             'start_after_create' => true,
         ];
         $response = $this->postRequest($url, $json);
-
+        ExtensionHelper::error('HetznerCloud', 'Failed to create server for order ' . $orderProduct->id . ' with error ' . $response->body());
         if (!$response->successful()) {
-            ExtensionHelper::error('HetznerCloud', 'Failed to create server for order ' . $orderProduct->id . ' with error ' . $response->body());
             return false;
         }
         ExtensionHelper::setOrderProductConfig('server_id', $response->json()["server"]["id"], $orderProduct->id);
