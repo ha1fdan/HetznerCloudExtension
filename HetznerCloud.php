@@ -12,7 +12,7 @@ class HetznerCloud extends Server
         return [
             'display_name' => 'Hetzner Cloud',
             'version' => '1.0.0',
-            'author' => 'Halfdan',
+            'author' => 'Ha1fdan',
             'website' => 'https://halfdan.top',
         ];
     }
@@ -140,9 +140,7 @@ class HetznerCloud extends Server
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
         $server_type = $params['server_type'];
-        $enable_ipv4 = $params['enable_ipv4'];
-        $enable_ipv6 = $params['enable_ipv6'];
-        $servername = "vps-".date('dmYs'); //$orderProduct->id
+        $servername = "vps-".date('dmYs');
 
         $json = [
             'automount' => false,
@@ -150,8 +148,8 @@ class HetznerCloud extends Server
             'location' => $location,
             'name' => $servername,
             'public_net' => [
-                'enable_ipv4' => true, //$enable_ipv4
-                'enable_ipv6' => true, //$enable_ipv6
+                'enable_ipv4' => true,
+                'enable_ipv6' => true,
             ],
             'server_type' => $server_type,
             'start_after_create' => true,
@@ -210,12 +208,11 @@ class HetznerCloud extends Server
 
     public function getCustomPages($user, $params, $order, $product, $configurableOptions)
     {
-        
         $server_id = $params['config']['server_id'];
         $server_ipv4 = $params['config']['server_ipv4'];
         $server_ipv6 = $params['config']['server_ipv6'];
         $server_root_passwd = $params['config']['server_root_passwd'];
-        //dd($params);
+
         return [
             'name' => 'info',
             'template' => 'hetznercloud::info',
