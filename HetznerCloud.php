@@ -135,7 +135,7 @@ class HetznerCloud extends Server
 
     public function createServer($user, $params, $order, $orderProduct, $configurableOptions): bool
     {
-        dd($params);
+        //dd($params);
         $url = "https://api.hetzner.cloud/v1/servers";
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
