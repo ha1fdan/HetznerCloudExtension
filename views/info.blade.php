@@ -11,4 +11,42 @@
         <u>Temporarily</u> SSH Password: <code>{{$server_root_passwd}}</code>
         <br />
     </div>
+    <div class="flex gap-2">
+        <p>Server status: {{ $status }}</p>
+
+        <button class="button button-success" onclick="hetzner_control('poweron')">
+            Start Server
+        </button>
+
+        <button class="button button-primary" onclick="hetzner_control('reboot')">
+            Reboot Server
+        </button>
+
+        <button class="button button-danger" onclick="hetzner_control('poweroff')">
+            Force Stop Server
+        </button>
+    </div>
 </div>
+<script>
+    function hetzner_control(action) {
+        var xhr = new XMLHttpRequest(); 
+        xhr.open('POST', '{{ route('extensions.hetzner.status', $orderProduct->id) }}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                if (data.status == 'success') {
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                alert('An error occurred while trying to perform this action.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('An error occurred while trying to perform this action.');
+        };
+        xhr.send('_token={{ csrf_token() }}&status=' + action);
+    }
+</script>

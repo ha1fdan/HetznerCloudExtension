@@ -4,6 +4,9 @@ namespace App\Extensions\Servers\HetznerCloud;
 use App\Classes\Extensions\Server;
 use App\Helpers\ExtensionHelper;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
+use App\Models\OrderProduct;
+use App\Models\Product;
 
 class HetznerCloud extends Server
 {
@@ -171,12 +174,12 @@ class HetznerCloud extends Server
 
     public function suspendServer($user, $params, $order, $orderProduct, $configurableOptions): bool
     {
-        return false;
+        throw new Exception('Not implemented');
     }
 
     public function unsuspendServer($user, $params, $order, $orderProduct, $configurableOptions): bool
     {
-        return false;
+        throw new Exception('Not implemented');
     }
 
     public function terminateServer($user, $params, $order, $orderProduct, $configurableOptions): bool
@@ -214,6 +217,10 @@ class HetznerCloud extends Server
         $server_ipv6 = $params['config']['server_ipv6'];
         $server_root_passwd = $params['config']['server_root_passwd'];
 
+        $status = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id);
+        if (!$status->json()) throw new Exception('Unable to get server status');
+        $status = $status->json()['server']['status'];
+
         return [
             'name' => 'info',
             'template' => 'hetznercloud::info',
@@ -222,9 +229,27 @@ class HetznerCloud extends Server
                 'server_ipv4' => $server_ipv4,
                 'server_ipv6' => $server_ipv6,
                 'server_root_passwd' => $server_root_passwd,
+                'status' => $status,
             ],
             
         ];
+    }
+
+    public function status(Request $request, OrderProduct $product)
+    {
+        $data = ExtensionHelper::getParameters($product);
+        $params = $data->config;
+        $server_id = $params['config']['server_id'];
+        // Change status
+        $postData = [];
+        $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request->status, $postData);
+        if (!$status->json()) throw new Exception('Unable to ' . $request->status . ' server');
+
+        // Return json response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Server status is ' . $request->status
+        ]);
     }
     
 }
