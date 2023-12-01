@@ -9,11 +9,16 @@
         SSH command: <strong>ssh root&#64;{{ $server_ipv4 }}</strong>
         <br />
         <u>Temporarily</u> SSH Password: <code>{{$server_root_passwd}}</code>
+        <br /><br />
+        <p>Server status: <strong>{{ $status }}</strong></p>
+        <p>Server Configuration: </p>
+        <ul>
+            <li>OS: <strong>{{ $description }}</strong></li>
+            <li>vCPU: <strong>{{ $cores }}</strong></li>
+            <li>RAM: <strong>{{ $memory }}GB</strong></li>
+            <li>SSD: <strong>{{ $disk }}GB</strong></li>
+        </ul>
         <br />
-    </div>
-    <div class="flex gap-2">
-        <p>Server status: {{ $status }}</p>
-
         <button class="button button-success" onclick="hetzner_control('poweron')">
             Start Server
         </button>

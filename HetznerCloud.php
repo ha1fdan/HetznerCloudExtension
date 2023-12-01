@@ -26,7 +26,6 @@ class HetznerCloud extends Server
         if ($config) {
             return $config;
         }
-
         return null;
     }
 
@@ -138,7 +137,6 @@ class HetznerCloud extends Server
 
     public function createServer($user, $params, $order, $orderProduct, $configurableOptions): bool
     {
-        //dd($params);
         $url = "https://api.hetzner.cloud/v1/servers";
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
@@ -158,8 +156,7 @@ class HetznerCloud extends Server
             'start_after_create' => true,
         ];
         $response = $this->postRequest($url, $json);
-        //dd($response);
-        
+
         if (!$response->successful()) {
             ExtensionHelper::error('HetznerCloud', 'Failed to create server for order ' . $orderProduct->id . ' with error ' . $response->body());
             return false;
@@ -194,7 +191,6 @@ class HetznerCloud extends Server
             $this->deleteRequest($url);
             return true;
         }
-
         return false;
     }
 
@@ -217,9 +213,13 @@ class HetznerCloud extends Server
         $server_ipv6 = $params['config']['server_ipv6'];
         $server_root_passwd = $params['config']['server_root_passwd'];
 
-        $status = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id);
-        if (!$status->json()) throw new Exception('Unable to get server status');
-        $status = $status->json()['server']['status'];
+        $status_request = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id);
+        if (!$status_request->json()) throw new Exception('Unable to get server status');
+        $status = $status_request->json()['server']['status'];
+        $description = $status_request->json()['server']['image']['description'];
+        $cores = $status_request->json()['server']['server_type']['cores'];
+        $memory = $status_request->json()['server']['server_type']['memory'];
+        $disk = $status_request->json()['server']['server_type']['disk'];
 
         return [
             'name' => 'info',
@@ -230,8 +230,11 @@ class HetznerCloud extends Server
                 'server_ipv6' => $server_ipv6,
                 'server_root_passwd' => $server_root_passwd,
                 'status' => $status,
+                'description' => $description,
+                'cores' => $cores,
+                'memory' => $memory,
+                'disk' => $disk,
             ],
-            
         ];
     }
 
@@ -251,7 +254,7 @@ class HetznerCloud extends Server
         // Return json response
         return response()->json([
             'status' => 'success',
-            'message' => 'Server status is ' . $request->status . '',
+            'message' => 'Server status is ' . $request->status,
         ]);
     }
     
