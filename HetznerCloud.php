@@ -241,14 +241,17 @@ class HetznerCloud extends Server
         $params = $data->config;
         $server_id = $params['config']['server_id'];
         // Change status
-        $postData = [];
+        $postData = [
+            'id' => $server_id,
+        ];
         $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request->status, $postData);
-        if (!$status->json()) throw new Exception('Unable to ' . $request->status . ' server');
+        //dd($status->json());
+        if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request->status . ' server');
 
         // Return json response
         return response()->json([
             'status' => 'success',
-            'message' => 'Server status is ' . $request->status
+            'message' => 'Server status is ' . $request->status . '',
         ]);
     }
     
