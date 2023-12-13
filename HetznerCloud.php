@@ -250,6 +250,10 @@ class HetznerCloud extends Server
         $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request->status, $postData);
         //dd($status->json());
         if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request->status . ' server');
+        //Check for a new root password with command reset_password
+        if (isset($status->json()['root_password'])) {
+            ExtensionHelper::setOrderProductConfig('server_root_passwd', $status->json()["root_password"], $product->id);
+        }
 
         // Return json response
         return response()->json([

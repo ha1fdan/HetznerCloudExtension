@@ -11,7 +11,7 @@
         <u>Temporarily</u> SSH Password: <code>{{$server_root_passwd}}</code>
         <br /><br />
         <p>Server status: <strong>{{ $status }}</strong></p>
-        <p>Server Configuration: </p>
+        <p class="text-2xl font-bold">Server Configuration: </p>
         <ul>
             <li>OS: <strong>{{ $description }}</strong></li>
             <li>vCPU: <strong>{{ $cores }}</strong></li>
@@ -29,6 +29,14 @@
 
         <button class="button button-danger" onclick="hetzner_control('poweroff')">
             Force Stop Server
+        </button>
+
+        <button class="button button-warning" onclick="hetzner_control('reset')">
+            Reset Server
+        </button>
+
+        <button class="button button-danger" onclick="hetzner_control('reset_password')">
+            Reset root Password
         </button>
     </div>
 </div>
