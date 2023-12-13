@@ -14,9 +14,9 @@ class HetznerCloud extends Server
     {
         return [
             'display_name' => 'Hetzner Cloud',
-            'version' => '1.0.0',
+            'version' => '2.0.0',
             'author' => 'Ha1fdan',
-            'website' => 'https://halfdan.top',
+            'website' => 'https://ha1fdan.xyz',
         ];
     }
 
