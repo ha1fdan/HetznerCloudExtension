@@ -165,6 +165,7 @@ class HetznerCloud extends Server
         ExtensionHelper::setOrderProductConfig('server_ipv4', $response->json()["server"]["public_net"]["ipv4"]["ip"], $orderProduct->id);
         ExtensionHelper::setOrderProductConfig('server_ipv6', $response->json()["server"]["public_net"]["ipv6"]["ip"], $orderProduct->id);
         ExtensionHelper::setOrderProductConfig('server_root_passwd', $response->json()["root_password"], $orderProduct->id);
+        ExtensionHelper::setOrderProductConfig('server_image', $image, $orderProduct->id);
         return true;
         
     }
@@ -243,10 +244,16 @@ class HetznerCloud extends Server
         $data = ExtensionHelper::getParameters($product);
         $params = $data->config;
         $server_id = $params['config']['server_id'];
+        $server_image = $params['config']['server_image'];
         // Change status
         $postData = [
             'id' => $server_id,
         ];
+
+        if($request->status == "rebuild") {
+            $postData['image'] = $server_image;
+        }
+
         $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request->status, $postData);
         //dd($status->json());
         if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request->status . ' server');

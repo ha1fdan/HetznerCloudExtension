@@ -8,9 +8,8 @@
         <br /><br />
         SSH command: <strong>ssh root&#64;{{ $server_ipv4 }}</strong>
         <br />
-        <u>Temporarily</u> SSH Password: <code>{{$server_root_passwd}}</code>
+        <u>Temporarily</u> root Password: <code>{{$server_root_passwd}}</code>
         <br /><br />
-        <p>Server status: <strong>{{ $status }}</strong></p>
         <p class="text-2xl font-bold">Server Configuration: </p>
         <ul>
             <li>OS: <strong>{{ $description }}</strong></li>
@@ -19,24 +18,36 @@
             <li>SSD: <strong>{{ $disk }}GB</strong></li>
         </ul>
         <br />
-        <button class="button button-success" onclick="hetzner_control('poweron')">
-            Start Server
+        <button class="button button-success mr-1" @if ($status == "running") disabled @endif onclick="hetzner_control('poweron')">
+            @if ($status == "running")
+                Server is Running
+            @else
+                Start Server
+            @endif
         </button>
 
-        <button class="button button-primary" onclick="hetzner_control('reboot')">
+        <button class="button button-secondary mr-1" onclick="hetzner_control('reboot')">
             Reboot Server
         </button>
 
-        <button class="button button-danger" onclick="hetzner_control('poweroff')">
-            Force Stop Server
+        <button class="button button-danger mr-1" @if ($status == "off") disabled @endif onclick="hetzner_control('poweroff')">
+            @if ($status == "off")
+                Server is Off
+            @else
+                Force Stop Server
+            @endif
         </button>
 
-        <button class="button button-warning" onclick="hetzner_control('reset')">
+        <button class="button button-danger mr-1" onclick="hetzner_control('reset')">
             Reset Server
         </button>
 
-        <button class="button button-danger" onclick="hetzner_control('reset_password')">
+        <button class="button button-secondary mr-1" onclick="hetzner_control('reset_password')">
             Reset root Password
+        </button>
+
+        <button class="button button-danger mr-1" onclick="hetzner_control('rebuild')">
+            Rebuild OS
         </button>
     </div>
 </div>
