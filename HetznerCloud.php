@@ -16,7 +16,7 @@ class HetznerCloud extends Server
             'display_name' => 'Hetzner Cloud',
             'version' => '2.0.0',
             'author' => 'Ha1fdan',
-            'website' => 'https://ha1fdan.xyz',
+            'website' => 'https://ha1fdan.xyz/HetznerCloudExtension/',
         ];
     }
 
