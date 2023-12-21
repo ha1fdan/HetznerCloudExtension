@@ -38,6 +38,34 @@ class HetznerCloud extends Server
                 'type' => 'text',
                 'required' => true,
             ],
+            [
+                'name' => 'serverHostname',
+                'friendlyName' => 'Hostname of server + creation date | Examples: vps-,server-,instance-  | Example with current settings: '.$this->config('serverHostname').date('dmYs'),
+                'type' => 'text', //dropdown
+                'options' => [
+                    [
+                        'name' => 'vps-'.date('dmYs'),
+                        'value' => 'none-',
+                    ],
+                    [
+                        'name' => 'server-'.date('dmYs'),
+                        'value' => 'server-',
+                    ],
+                    [
+                        'name' => 'instance-'.date('dmYs'),
+                        'value' => 'instance-',
+                    ],
+                    [
+                        'name' => 'node-'.date('dmYs'),
+                        'value' => 'node-',
+                    ],
+                    [
+                        'name' => 'cloud-'.date('dmYs'),
+                        'value' => 'cloud-',
+                    ],
+                ],
+                'required' => true,
+            ],
         ];
     }
 
@@ -141,7 +169,8 @@ class HetznerCloud extends Server
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
         $server_type = $params['server_type'];
-        $servername = "vps-".date('dmYs');
+        //$servername = "vps-".date('dmYs');
+        $servername = $this->config('serverHostname').date('dmYs');
 
         $json = [
             'automount' => false,
