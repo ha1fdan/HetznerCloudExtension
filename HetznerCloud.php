@@ -250,6 +250,7 @@ class HetznerCloud extends Server
         $cores = $status_request->json()['server']['server_type']['cores'];
         $memory = $status_request->json()['server']['server_type']['memory'];
         $disk = $status_request->json()['server']['server_type']['disk'];
+        $reverse_dns = $status_request->json()['server']['public_net']['ipv4']['dns_ptr'];
 
         return [
             'name' => 'info',
@@ -264,6 +265,7 @@ class HetznerCloud extends Server
                 'cores' => $cores,
                 'memory' => $memory,
                 'disk' => $disk,
+                'reverse_dns' => $reverse_dns,
             ],
         ];
     }
@@ -273,19 +275,28 @@ class HetznerCloud extends Server
         $data = ExtensionHelper::getParameters($product);
         $params = $data->config;
         $server_id = $params['config']['server_id'];
+        $server_ipv4 = $params['config']['server_ipv4'];
         $server_image = $params['config']['server_image'];
+        $request_action = $request->status;
         // Change status
         $postData = [
             'id' => $server_id,
         ];
 
+        if(str_starts_with($request->status, "change_dns_ptr")) {
+            $request_action = "change_dns_ptr";
+            $new_dns_ptr = explode("__",$request->status)[1];
+            $postData['dns_ptr'] = $new_dns_ptr;
+            $postData['ip'] = $server_ipv4; //$server_ipv6 also works :)
+        }
+
         if($request->status == "rebuild") {
             $postData['image'] = $server_image;
         }
 
-        $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request->status, $postData);
+        $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request_action, $postData);
         //dd($status->json());
-        if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request->status . ' server');
+        if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request_action . ' server');
         //Check for a new root password with command reset_password
         if (isset($status->json()['root_password'])) {
             ExtensionHelper::setOrderProductConfig('server_root_passwd', $status->json()["root_password"], $product->id);
@@ -294,7 +305,7 @@ class HetznerCloud extends Server
         // Return json response
         return response()->json([
             'status' => 'success',
-            'message' => 'Server status is ' . $request->status,
+            'message' => 'Server status is ' . $request_action,
         ]);
     }
     

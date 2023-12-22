@@ -49,10 +49,23 @@
         <button class="button button-danger mr-1" onclick="hetzner_control('rebuild')">
             Rebuild OS
         </button>
+
+        <br/>
+        <br/>
+        <input type="text" id="reverse_dns" class="py-2 bg-secondary-200 text-secondary-800 font-medium rounded-md placeholder-secondary-500 outline-none" style="width: 20rem;" value="{{ $reverse_dns }}" />
+
+        <button class="button button-success mr-1" onclick="hetzner_control('change_dns_ptr')">
+            Save Reverse DNS
+        </button>
     </div>
 </div>
 <script>
     function hetzner_control(action) {
+        if(action == "change_dns_ptr") {
+            var new_reverse_dns = document.getElementById('reverse_dns').value;
+            action=action+"__"+new_reverse_dns;
+        }
+
         var xhr = new XMLHttpRequest(); 
         xhr.open('POST', '{{ route('extensions.hetzner.status', $orderProduct->id) }}');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
