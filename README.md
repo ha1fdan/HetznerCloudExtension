@@ -19,7 +19,8 @@ Support on discord at: https://discord.gg/n8hpbek59q, awesome😎 Paymenter disc
 - [x] Start, Stop, Force Stop & Reset Servr
 - [x] Rebuild OS, aka. reinstall os
 - [x] Set Reverse DNS
-- [ ] CPU, Disk & Network usage graphs
+- [x] CPU, Disk & Network Metrics graphs
+- [ ] VNC Console
 
 ## Screenshots
 ![configurableOptions](https://github.com/ha1fdan/HetznerCloudExtension/assets/41484873/dce5fa4d-dda2-45e3-810e-cb4dc1ab20e5)
