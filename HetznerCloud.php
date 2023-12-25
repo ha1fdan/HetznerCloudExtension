@@ -252,6 +252,16 @@ class HetznerCloud extends Server
         $disk = $status_request->json()['server']['server_type']['disk'];
         $reverse_dns = $status_request->json()['server']['public_net']['ipv4']['dns_ptr'];
 
+        // WSS Console Connection
+        //$postData = [
+            //'id' => $server_id,
+        //];
+        //$wss_status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/request_console', $postData);
+        //if ($wss_status->json()['action']['error'] != null) throw new Exception('Unable to get wss console for server');
+        //$wss_url = $wss_status->json()['wss_url'];
+        //$wss_password = $wss_status->json()['password'];
+        //dd($wss_status);
+
         return [
             'name' => 'info',
             'template' => 'hetznercloud::info',
@@ -266,7 +276,21 @@ class HetznerCloud extends Server
                 'memory' => $memory,
                 'disk' => $disk,
                 'reverse_dns' => $reverse_dns,
+                //'wss_url' => $wss_url,
+                //'wss_password' => $wss_password,
             ],
+            'pages' => [
+                    [
+                    'template' => 'hetznercloud::graphs',
+                    'name' => 'Console',
+                    'url' => 'console',
+                   ],
+                   //[
+                    //'template' => 'hetznercloud::console',
+                    //'name' => 'Console',
+                    //'url' => 'console',
+                   //],
+            ]
         ];
     }
 
