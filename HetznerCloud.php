@@ -262,6 +262,26 @@ class HetznerCloud extends Server
         //$wss_password = $wss_status->json()['password'];
         //dd($wss_status);
 
+        //Server Metrics
+        $ctime = time(); // current time
+        $start_time = strtotime('-1 hour', $ctime);
+        // Format the times in ISO-8601 format
+        $start = urlencode(date('c', $start_time));
+        $end = urlencode(date('c', $ctime));
+
+        $metrics_cpu_request = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/metrics?type=cpu&start='.$start.'&end='.$end);
+        if (!$metrics_cpu_request->json()) throw new Exception('Unable to get server metrics for CPU');
+        $metrics_cpu = $metrics_cpu_request->json()['metrics']['time_series']['cpu']['values'];
+        
+        $metrics_disk_request = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/metrics?type=disk&start='.$start.'&end='.$end);
+        if (!$metrics_disk_request->json()) throw new Exception('Unable to get server metrics for DISK');
+        $metrics_disk = $metrics_disk_request->json()['metrics']['time_series'];
+        
+        $metrics_network_request = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/metrics?type=network&start='.$start.'&end='.$end);
+        if (!$metrics_network_request->json()) throw new Exception('Unable to get server metrics for NETWORK');
+        $metrics_network = $metrics_network_request->json()['metrics']['time_series'];
+        
+
         return [
             'name' => 'info',
             'template' => 'hetznercloud::info',
@@ -278,12 +298,16 @@ class HetznerCloud extends Server
                 'reverse_dns' => $reverse_dns,
                 //'wss_url' => $wss_url,
                 //'wss_password' => $wss_password,
+                'metrics_cpu' => $metrics_cpu,
+                'metrics_disk' => $metrics_disk,
+                'metrics_network' => $metrics_network,
+
             ],
             'pages' => [
                     [
-                    'template' => 'hetznercloud::graphs',
-                    'name' => 'Console',
-                    'url' => 'console',
+                    'template' => 'hetznercloud::metrics',
+                    'name' => 'Server Metrics',
+                    'url' => 'metrics',
                    ],
                    //[
                     //'template' => 'hetznercloud::console',
