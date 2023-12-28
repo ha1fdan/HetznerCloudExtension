@@ -9,13 +9,12 @@ The extension uses Hetzners API to create Cloud Servers automatically.  The exte
 Power controls for Starting, Stopping and Rebooting the server. You can also Force Stop the server or Reset the root Password if you get locked out. And if everything goes wrong you can Rebuild the OS. You can also set the Reverse DNS entry if needed.
 
 You can also see metrics for CPU, Disk and Network usage.
-Supports configurable options for: `location` and `image`.
+<br/>Supports configurable options for: `location` and `image`.
 
 If you want to implement new features check out Hetzner Cloud Docs: https://docs.hetzner.cloud/ & make a pull request ❤️
 
 Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud 🎉
-
-Support on discord at: https://discord.gg/n8hpbek59q, awesome😎 Paymenter discord: https://discord.gg/xB4UUT3XQg
+<br/>For support or feature requests please message [@ha1fdan](https://discord.gg/n8hpbek59q) on discord.
 
 ---
 
