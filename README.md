@@ -18,7 +18,7 @@ Support on discord at: https://discord.gg/n8hpbek59q, awesome😎 Paymenter disc
 - [x] Shows IPv4 & IPv6
 - [x] Shows Temporarily root Password
 - [x] Reset root Password
-- [x] Start, Stop, Force Stop & Reset Servr
+- [x] Start, Stop, Force Stop & Reset Server
 - [x] Rebuild OS, aka. reinstall os
 - [x] Set Reverse DNS
 - [x] CPU, Disk & Network Metrics graphs
