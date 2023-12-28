@@ -43,7 +43,6 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
     <div>
         <h2 class="text-xl font-bold mt-4 mb-2 dark:text-darkmodetext">Information</h2>
-        
         <div class="flex flex-col gap-2">
             <div class="flex justify-between">
                 <label>ID:</label>
@@ -57,10 +56,20 @@
                 <label>IPv6 Address:</label>
                 <label><strong>{{ $server_ipv6 }}</strong></label>
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between password-paragraph" onmouseenter="showPassword(this)" onmouseleave="dontShowPassword(this)">
                 <label><u>Temporarily</u> root Password:</label>
-                <label><strong><code>{{$server_root_passwd}}</code></strong></label>
+                <label class="hidden-text"><i>Hover to show password</i></label>
             </div>
+            <script>
+                function showPassword(element) {
+                var hiddenText = element.querySelector('.hidden-text');
+                hiddenText.innerHTML = '<strong><code>{{$server_root_passwd}}</code></strong>';
+                }
+                function dontShowPassword(element) {
+                var hiddenText = element.querySelector('.hidden-text');
+                hiddenText.innerHTML = '<i>Hover to show password</i>';
+                }
+            </script>
         </div>
     </div>
 
@@ -140,10 +149,10 @@
             </button>
             
             <form action="{{ route('extensions.hetzner.revdns', $orderProduct->id) }}" method="POST">
-            <input type="text" name="reverse_dns" class="bg-secondary-200 text-secondary-800 font-medium rounded-md placeholder-secondary-500 outline-none" style="width: 20rem;" value="{{ $reverse_dns }}" required />
-            <button class="button button-success" type="submit">
-                Save Reverse DNS
-            </button>
+                <input type="text" name="reverse_dns" class="bg-secondary-200 text-secondary-800 font-medium rounded-md placeholder-secondary-500 outline-none" style="width: 20rem;" value="{{ $reverse_dns }}" required />
+                <button class="button button-success" type="submit">
+                    Save Reverse DNS
+                </button>
             </form>
         </div>
     </div>
