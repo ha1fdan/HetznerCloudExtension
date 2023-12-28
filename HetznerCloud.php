@@ -360,9 +360,20 @@ class HetznerCloud extends Server
         $server_id = $params['config']['server_id'];
         $server_ipv4 = $params['config']['server_ipv4'];
         $form_data_dns = $request->status;
+
+
+        // BETA - HAS TO BE TESTED!
+        /*foreach (['ipv4', 'ipv6'] as $ipVersion) {
+            $set_dns = $this->postRequest("https://api.hetzner.cloud/v1/servers/{$server_id}/actions/change_dns_ptr", [
+                'id' => $server_id,
+                'ip' => ($ipVersion === 'ipv4') ? $server_ipv4 : $server_ipv6,
+                'dns_ptr' => $request->reverse_dns,
+            ]);
+        }*/
+
         $postData = [
             'id' => $server_id,
-            'ip' => $server_ipv4, //$server_ipv6 also works :)
+            'ip' => $server_ipv4,
             'dns_ptr' => $request->reverse_dns,
         ];
 
