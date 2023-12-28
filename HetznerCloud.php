@@ -14,7 +14,7 @@ class HetznerCloud extends Server
     {
         return [
             'display_name' => 'Hetzner Cloud',
-            'version' => '2.0.0',
+            'version' => '2.0.1',
             'author' => 'Ha1fdan',
             'website' => 'https://ha1fdan.xyz/HetznerCloudExtension/',
         ];
@@ -331,13 +331,6 @@ class HetznerCloud extends Server
             'id' => $server_id,
         ];
 
-        if(str_starts_with($request->status, "change_dns_ptr")) {
-            $request_action = "change_dns_ptr";
-            $new_dns_ptr = explode("__",$request->status)[1];
-            $postData['dns_ptr'] = $new_dns_ptr;
-            $postData['ip'] = $server_ipv4; //$server_ipv6 also works :)
-        }
-
         if($request->status == "rebuild") {
             $postData['image'] = $server_image;
         }
@@ -355,6 +348,31 @@ class HetznerCloud extends Server
             'status' => 'success',
             'message' => 'Server status is ' . $request_action,
         ]);
+    }
+
+    public function revdns(Request $request, OrderProduct $product)
+    {
+        $request->validate([
+            'reverse_dns' => ['required', 'string', 'max:255'],
+        ]);
+        $data = ExtensionHelper::getParameters($product);
+        $params = $data->config;
+        $server_id = $params['config']['server_id'];
+        $server_ipv4 = $params['config']['server_ipv4'];
+        $form_data_dns = $request->status;
+        $postData = [
+            'id' => $server_id,
+            'ip' => $server_ipv4, //$server_ipv6 also works :)
+            'dns_ptr' => $request->reverse_dns,
+        ];
+
+        $set_dns = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/change_dns_ptr', $postData);
+        if ($set_dns->json()['action']['error'] != null) throw new Exception('Unable to change reverse dns for server');
+        return redirect()->back()->with('success', 'Reverse dns entry has been updated successfully');
+        /*return response()->json([
+            'status' => 'success',
+            'message' => 'Servers reverse dns entry has been updated',
+        ]);*/
     }
     
 }

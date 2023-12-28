@@ -1,72 +1,158 @@
-<div class="flex">
-    <div class="flex-1">
-        Server support ID: <strong><u>{{ $server_id }}</u></strong>
-        <br />
-        IPv4: <strong>{{ $server_ipv4 }}</strong>
-        <br />
-        IPv6: <strong>{{ $server_ipv6 }}</strong>
-        <br /><br />
-        SSH command: <strong>ssh root&#64;{{ $server_ipv4 }}</strong>
-        <br />
-        <u>Temporarily</u> root Password: <code>{{$server_root_passwd}}</code>
-        <br /><br />
-        <p class="text-2xl font-bold">Server Configuration: </p>
-        <ul>
-            <li>OS: <strong>{{ $description }}</strong></li>
-            <li>vCPU: <strong>{{ $cores }}</strong></li>
-            <li>RAM: <strong>{{ $memory }}GB</strong></li>
-            <li>SSD: <strong>{{ $disk }}GB</strong></li>
-        </ul>
-        <br />
-        <button class="button button-success mr-1" @if ($status == "running") disabled @endif onclick="hetzner_control('poweron')">
-            @if ($status == "running")
-                Server is Running
-            @else
-                Start Server
-            @endif
-        </button>
+<div class="flex justify-between">
+    <h1 class="flex-1 text-3xl">
+        Server: #{{ $server_id }}
+    </h1>
+    @switch($status)
+        @case("running")
+            <span class="flex-1 text-xl my-auto text-right text-green-500">
+                Running
+            </span>
+            @break
+        @case("initializing")
+            <span class="flex-1 text-xl my-auto text-right text-indigo-500">
+                Initializing
+            </span>
+            @break
+        @case("starting")
+            <span class="flex-1 text-xl my-auto text-right text-orange-500">
+                Starting
+            </span>
+            @break
+        @case("stopping")
+            <span class="flex-1 text-xl my-auto text-right text-orange-500">
+                Stopping
+            </span>
+            @break
+        @case("off")
+            <span class="flex-1 text-xl my-auto text-right text-red-500">
+                Stopped
+            </span>
+            @break
+        @case("rebuilding")
+            <span class="flex-1 text-xl my-auto text-right text-orange-500">
+                Rebuilding
+            </span>
+            @break
+        @default
+            <span class="flex-1 text-xl my-auto text-right text-gray-500">
+                {{ ucfirst($status) }}
+            </span>
+    @endswitch
+</div>
 
-        <button class="button button-secondary mr-1" onclick="hetzner_control('reboot')">
-            Reboot Server
-        </button>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+    <div>
+        <h2 class="text-xl font-bold mt-4 mb-2 dark:text-darkmodetext">Information</h2>
+        
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+                <label>ID:</label>
+                <label><strong>{{ $server_id }}</strong></label>
+            </div>
+            <div class="flex justify-between">
+                <label>IPv4 Address:</label>
+                <label><strong>{{ $server_ipv4 }}</strong></label>
+            </div>
+            <div class="flex justify-between">
+                <label>IPv6 Address:</label>
+                <label><strong>{{ $server_ipv6 }}</strong></label>
+            </div>
+            <div class="flex justify-between">
+                <label><u>Temporarily</u> root Password:</label>
+                <label><strong><code>{{$server_root_passwd}}</code></strong></label>
+            </div>
+        </div>
+    </div>
 
-        <button class="button button-danger mr-1" @if ($status == "off") disabled @endif onclick="hetzner_control('poweroff')">
-            @if ($status == "off")
-                Server is Off
-            @else
-                Force Stop Server
-            @endif
-        </button>
+    <div>
+        <h2 class="text-xl font-bold mt-4 mb-2 dark:text-darkmodetext">Power Control</h2>
+        <p>Your server is currently 
+        @switch($status)
+        @case("running")
+            <span class="text-green-500">
+                Running
+            </span>
+            @break
+        @case("initializing")
+            <span class="text-indigo-500">
+                Initializing
+            </span>
+            @break
+        @case("starting")
+            <span class="text-orange-500">
+                Starting
+            </span>
+            @break
+        @case("stopping")
+            <span class="text-orange-500">
+                Stopping
+            </span>
+            @break
+        @case("off")
+            <span class="text-red-500">
+                Stopped
+            </span>
+            @break
+        @case("rebuilding")
+            <span class="text-orange-500">
+                Rebuilding
+            </span>
+            @break
+        @default
+            <span class="text-gray-500">
+                {{ ucfirst($status) }}
+            </span>
+    @endswitch
+        </p>
+        
+        <div class="flex gap-2 mt-2">
+            <button class="button button-success" @if ($status == "running") disabled @endif onclick="hetzner_control('poweron')">
+                @if ($status == "running")
+                    Server is Running
+                @else
+                    Start Server
+                @endif
+            </button>
 
-        <button class="button button-danger mr-1" onclick="hetzner_control('reset')">
-            Reset Server
-        </button>
+            <button class="button bg-yellow-500 hover:bg-yellow-700 text-white" onclick="hetzner_control('reboot')">
+                Reboot Server
+            </button>
 
-        <button class="button button-secondary mr-1" onclick="hetzner_control('reset_password')">
-            Reset root Password
-        </button>
+            <button class="button bg-red-600 hover:bg-red-700 text-white" @if ($status == "off") disabled @endif onclick="hetzner_control('poweroff')">
+                @if ($status == "off")
+                    Server is Offline
+                @else
+                    Force Stop Server
+                @endif
+            </button>
 
-        <button class="button button-danger mr-1" onclick="hetzner_control('rebuild')">
-            Rebuild OS
-        </button>
+            <!--<button class="button bg-red-600 hover:bg-red-700 text-white" onclick="hetzner_control('reset')">
+                Power cycle Server
+            </button>-->
 
-        <br/>
-        <br/>
-        <input type="text" id="reverse_dns" class="py-2 bg-secondary-200 text-secondary-800 font-medium rounded-md placeholder-secondary-500 outline-none" style="width: 20rem;" value="{{ $reverse_dns }}" />
-
-        <button class="button button-success mr-1" onclick="hetzner_control('change_dns_ptr')">
-            Save Reverse DNS
-        </button>
+            <button class="button button-secondary text-white" onclick="hetzner_control('reset_password')">
+                Reset root Password
+            </button>
+        </div>
+        <div class="flex gap-2 mt-2">
+            <button class="button button-danger" onclick="hetzner_control('rebuild')">
+                Rebuild OS
+            </button>
+            
+            <form action="{{ route('extensions.hetzner.revdns', $orderProduct->id) }}" method="POST">
+            <input type="text" name="reverse_dns" class="bg-secondary-200 text-secondary-800 font-medium rounded-md placeholder-secondary-500 outline-none" style="width: 20rem;" value="{{ $reverse_dns }}" required />
+            <button class="button button-success" type="submit">
+                Save Reverse DNS
+            </button>
+            </form>
+        </div>
     </div>
 </div>
+        
+   
 <script>
     function hetzner_control(action) {
-        if(action == "change_dns_ptr") {
-            var new_reverse_dns = document.getElementById('reverse_dns').value;
-            action=action+"__"+new_reverse_dns;
-        }
-
-        var xhr = new XMLHttpRequest(); 
+        var xhr = new XMLHttpRequest();
         xhr.open('POST', '{{ route('extensions.hetzner.status', $orderProduct->id) }}');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
