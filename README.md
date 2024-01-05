@@ -3,7 +3,8 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-# <ins>WIP!</ins> - Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+# Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+> Note: This extension is in its early stages and may contain bugs.
 The extension uses Hetzners API to create Cloud Servers automatically.  The extension shows information about your server, like IPv4, IPv6 & temporarily root password for SSH.
 
 Power controls for Starting, Stopping and Rebooting the server. You can also Force Stop the server or Reset the root Password if you get locked out. And if everything goes wrong you can Rebuild the OS. You can also set the Reverse DNS entry if needed.
