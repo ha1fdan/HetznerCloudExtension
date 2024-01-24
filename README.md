@@ -30,6 +30,8 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 - [x] Set Reverse DNS
 - [x] CPU, Disk & Network Metrics graphs
 - [ ] VNC Console
+- [ ] Option for adding additional IPv4 and IPv6
+- [ ] Option to add another volume or upgrade existing
 
 ---
 
