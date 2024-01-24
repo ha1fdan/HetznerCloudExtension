@@ -27,7 +27,7 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 - [x] Reset root Password
 - [x] Start, Stop, Force Stop & Reset Server
 - [x] Rebuild OS, aka. reinstall os
-- [x] Set Reverse DNS
+- [x] Set Reverse DNS, (for IPv4)
 - [x] CPU, Disk & Network Metrics graphs
 - [ ] VNC Console
 - [ ] Option for adding additional IPv4 and IPv6
