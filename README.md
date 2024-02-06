@@ -9,7 +9,7 @@ The extension uses Hetzners API to create Cloud Servers automatically.  The exte
 Power controls for Starting, Stopping and Rebooting the server. You can also Force Stop the server or Reset the root Password if you get locked out. And if everything goes wrong you can Rebuild the OS. You can also set the Reverse DNS entry if needed.
 
 You can also see metrics for CPU, Disk and Network usage.
-<br/>Supports configurable options for: `location` and `image`.
+<br/>Supports configurable options for: `location`, `image` and `hostname`.
 
 If you want to implement new features check out Hetzner Cloud Docs: https://docs.hetzner.cloud/ & make a pull request ❤️
 

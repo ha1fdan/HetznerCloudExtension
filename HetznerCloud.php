@@ -169,14 +169,24 @@ class HetznerCloud extends Server
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
         $server_type = $params['server_type'];
-        //$servername = "vps-".date('dmYs');
-        $servername = $this->config('serverHostname').date('dmYs');
+        //$hostname = "vps-".date('dmYs');
+        $default_hostname = $this->config('serverHostname').date('dmYs');
+        try {
+            $configurableOptions['hostname']->validate([
+                'hostname' => ['required', 'string', 'max:250', 'unique:projects', 'regex:/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/'],
+            ]);
+            $hostname = $configurableOptions['hostname'] ?? $default_hostname;
+        }
+        catch (\Exception $e) {
+            $hostname = $default_hostname;
+        }
+        
 
         $json = [
             'automount' => false,
             'image' => $image,
             'location' => $location,
-            'name' => $servername,
+            'name' => $hostname,
             'public_net' => [
                 'enable_ipv4' => true,
                 'enable_ipv6' => true,
@@ -238,6 +248,9 @@ class HetznerCloud extends Server
 
     public function getCustomPages($user, $params, $order, $product, $configurableOptions)
     {
+        if(!isset($params['config']['server_id'])) {
+            return false;
+        }
         $server_id = $params['config']['server_id'];
         $server_ipv4 = $params['config']['server_ipv4'];
         $server_ipv6 = $params['config']['server_ipv6'];
