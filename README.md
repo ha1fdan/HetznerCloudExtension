@@ -3,7 +3,9 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-# <ins>WIP!</ins> - Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+# Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+> Note: This extension is in its early stages and may contain bugs.
+
 The extension uses Hetzners API to create Cloud Servers automatically.  The extension shows information about your server, like IPv4, IPv6 & temporarily root password for SSH.
 
 Power controls for Starting, Stopping and Rebooting the server. You can also Force Stop the server or Reset the root Password if you get locked out. And if everything goes wrong you can Rebuild the OS. You can also set the Reverse DNS entry if needed.
@@ -25,9 +27,11 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 - [x] Reset root Password
 - [x] Start, Stop, Force Stop & Reset Server
 - [x] Rebuild OS, aka. reinstall os
-- [x] Set Reverse DNS
+- [x] Set Reverse DNS, (for IPv4)
 - [x] CPU, Disk & Network Metrics graphs
 - [ ] VNC Console
+- [ ] Option for adding additional IPv4 and IPv6
+- [ ] Option to add another volume or upgrade existing
 
 ---
 
