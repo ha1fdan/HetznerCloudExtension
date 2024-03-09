@@ -36,22 +36,22 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 ---
 
 ## Screenshots
-![configurableOptions](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/1.png)
+![configurableOptions](https://ha1fdan.xyz/HetznerCloudExtension/1.png)
 <p>Support for configurable options (client side)</p>
 
-![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/2.png)
+![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/2.png)
 <p>Server Information (client side)</p>
 
-![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/3.png)
+![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/3.png)
 <p>Power Control & Status (client side)</p>
 
-![productExtensionConfig](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/4.png)
+![productExtensionConfig](https://ha1fdan.xyz/HetznerCloudExtension/4.png)
 <p>Metrics for cpu, disk and network usage (client side)</p>
 
-![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/5.png)
+![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/5.png)
 <p>Example of config for a product (admin side)</p>
 
-![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/screenshots/6.png)
+![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/6.png)
 <p>Settings for extension (admin side)</p>
 
 
