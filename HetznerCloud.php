@@ -169,7 +169,6 @@ class HetznerCloud extends Server
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
         $server_type = $params['server_type'];
-        //$hostname = "vps-".date('dmYs');
         $default_hostname = $this->config('serverHostname').date('dmYs');
         try {
             $configurableOptions['hostname']->validate([
@@ -181,7 +180,6 @@ class HetznerCloud extends Server
             $hostname = $default_hostname;
         }
         
-
         $json = [
             'automount' => false,
             'image' => $image,
@@ -265,16 +263,6 @@ class HetznerCloud extends Server
         $disk = $status_request->json()['server']['server_type']['disk'];
         $reverse_dns = $status_request->json()['server']['public_net']['ipv4']['dns_ptr'];
 
-        // WSS Console Connection
-        //$postData = [
-            //'id' => $server_id,
-        //];
-        //$wss_status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/request_console', $postData);
-        //if ($wss_status->json()['action']['error'] != null) throw new Exception('Unable to get wss console for server');
-        //$wss_url = $wss_status->json()['wss_url'];
-        //$wss_password = $wss_status->json()['password'];
-        //dd($wss_status);
-
         //Server Metrics
         $ctime = time(); // current time
         $start_time = strtotime('-1 hour', $ctime);
@@ -309,8 +297,6 @@ class HetznerCloud extends Server
                 'memory' => $memory,
                 'disk' => $disk,
                 'reverse_dns' => $reverse_dns,
-                //'wss_url' => $wss_url,
-                //'wss_password' => $wss_password,
                 'metrics_cpu' => $metrics_cpu,
                 'metrics_disk' => $metrics_disk,
                 'metrics_network' => $metrics_network,
@@ -322,11 +308,6 @@ class HetznerCloud extends Server
                     'name' => 'Server Metrics',
                     'url' => 'metrics',
                    ],
-                   //[
-                    //'template' => 'hetznercloud::console',
-                    //'name' => 'Console',
-                    //'url' => 'console',
-                   //],
             ]
         ];
     }
@@ -339,7 +320,6 @@ class HetznerCloud extends Server
         $server_ipv4 = $params['config']['server_ipv4'];
         $server_image = $params['config']['server_image'];
         $request_action = $request->status;
-        // Change status
         $postData = [
             'id' => $server_id,
         ];
@@ -349,14 +329,11 @@ class HetznerCloud extends Server
         }
 
         $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request_action, $postData);
-        //dd($status->json());
         if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request_action . ' server');
-        //Check for a new root password with command reset_password
         if (isset($status->json()['root_password'])) {
             ExtensionHelper::setOrderProductConfig('server_root_passwd', $status->json()["root_password"], $product->id);
         }
 
-        // Return json response
         return response()->json([
             'status' => 'success',
             'message' => 'Server status is ' . $request_action,
@@ -374,16 +351,6 @@ class HetznerCloud extends Server
         $server_ipv4 = $params['config']['server_ipv4'];
         $form_data_dns = $request->status;
 
-
-        // BETA - HAS TO BE TESTED!
-        /*foreach (['ipv4', 'ipv6'] as $ipVersion) {
-            $set_dns = $this->postRequest("https://api.hetzner.cloud/v1/servers/{$server_id}/actions/change_dns_ptr", [
-                'id' => $server_id,
-                'ip' => ($ipVersion === 'ipv4') ? $server_ipv4 : $server_ipv6,
-                'dns_ptr' => $request->reverse_dns,
-            ]);
-        }*/
-
         $postData = [
             'id' => $server_id,
             'ip' => $server_ipv4,
@@ -393,10 +360,6 @@ class HetznerCloud extends Server
         $set_dns = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/change_dns_ptr', $postData);
         if ($set_dns->json()['action']['error'] != null) throw new Exception('Unable to change reverse dns for server');
         return redirect()->back()->with('success', 'Reverse dns entry has been updated successfully');
-        /*return response()->json([
-            'status' => 'success',
-            'message' => 'Servers reverse dns entry has been updated',
-        ]);*/
     }
     
 }
