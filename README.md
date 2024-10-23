@@ -16,7 +16,7 @@ You can also see metrics for CPU, Disk and Network usage.
 If you want to implement new features check out Hetzner Cloud Docs: https://docs.hetzner.cloud/ & make a pull request ❤️
 
 Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud 🎉
-<br/>For support or feature requests please message [@ha1fdan](https://discord.gg/n8hpbek59q) on discord.
+<br/>For support or feature requests please message [@ha1fdan](https://ha1fdan.xyz/discord) on discord.
 
 ---
 
