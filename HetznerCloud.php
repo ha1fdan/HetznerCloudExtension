@@ -169,22 +169,14 @@ class HetznerCloud extends Server
         $location = $configurableOptions['location'] ?? $params['location'];
         $image = $configurableOptions['image'] ?? $params['image'];
         $server_type = $params['server_type'];
-        $default_hostname = $this->config('serverHostname').date('dmYs');
-        try {
-            $configurableOptions['hostname']->validate([
-                'hostname' => ['required', 'string', 'max:250', 'unique:projects', 'regex:/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/'],
-            ]);
-            $hostname = $configurableOptions['hostname'] ?? $default_hostname;
-        }
-        catch (\Exception $e) {
-            $hostname = $default_hostname;
-        }
-        
+        //$servername = "vps-".date('dmYs');
+        $servername = $this->config('serverHostname').date('dmYs');
+
         $json = [
             'automount' => false,
             'image' => $image,
             'location' => $location,
-            'name' => $hostname,
+            'name' => $servername,
             'public_net' => [
                 'enable_ipv4' => true,
                 'enable_ipv6' => true,
@@ -204,7 +196,7 @@ class HetznerCloud extends Server
         ExtensionHelper::setOrderProductConfig('server_root_passwd', $response->json()["root_password"], $orderProduct->id);
         ExtensionHelper::setOrderProductConfig('server_image', $image, $orderProduct->id);
         return true;
-        
+
     }
 
     public function suspendServer($user, $params, $order, $orderProduct, $configurableOptions): bool
@@ -263,7 +255,7 @@ class HetznerCloud extends Server
         $disk = $status_request->json()['server']['server_type']['disk'];
         $reverse_dns = $status_request->json()['server']['public_net']['ipv4']['dns_ptr'];
 
-        //Server Metrics
+        // Server Metrics
         $ctime = time(); // current time
         $start_time = strtotime('-1 hour', $ctime);
         // Format the times in ISO-8601 format
@@ -281,7 +273,8 @@ class HetznerCloud extends Server
         $metrics_network_request = $this->getRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/metrics?type=network&start='.$start.'&end='.$end);
         if (!$metrics_network_request->json()) throw new Exception('Unable to get server metrics for NETWORK');
         $metrics_network = $metrics_network_request->json()['metrics']['time_series'];
-        
+
+        $firewalls = $this->getFirewalls();
 
         return [
             'name' => 'info',
@@ -300,14 +293,20 @@ class HetznerCloud extends Server
                 'metrics_cpu' => $metrics_cpu,
                 'metrics_disk' => $metrics_disk,
                 'metrics_network' => $metrics_network,
-
+                'orderProduct' => $product,
+                'firewalls' => $firewalls
             ],
             'pages' => [
-                    [
+                [
                     'template' => 'hetznercloud::metrics',
                     'name' => 'Server Metrics',
                     'url' => 'metrics',
-                   ],
+                ],
+                [
+                    'template' => 'hetznercloud::firewall',
+                    'name' => 'Firewall',
+                    'url' => 'firewall',
+                ]
             ]
         ];
     }
@@ -320,24 +319,241 @@ class HetznerCloud extends Server
         $server_ipv4 = $params['config']['server_ipv4'];
         $server_image = $params['config']['server_image'];
         $request_action = $request->status;
+        // Change status
         $postData = [
             'id' => $server_id,
         ];
+
+        if(str_starts_with($request->status, "change_dns_ptr")) {
+            $request_action = "change_dns_ptr";
+            $new_dns_ptr = explode("__",$request->status)[1];
+            $postData['dns_ptr'] = $new_dns_ptr;
+            $postData['ip'] = $server_ipv4; //$server_ipv6 also works :)
+        }
 
         if($request->status == "rebuild") {
             $postData['image'] = $server_image;
         }
 
         $status = $this->postRequest('https://api.hetzner.cloud/v1/servers/'.$server_id.'/actions/'.$request_action, $postData);
+        //dd($status->json());
         if ($status->json()['action']['error'] != null) throw new Exception('Unable to ' . $request_action . ' server');
+        //Check for a new root password with command reset_password
         if (isset($status->json()['root_password'])) {
             ExtensionHelper::setOrderProductConfig('server_root_passwd', $status->json()["root_password"], $product->id);
         }
 
+        // Return json response
         return response()->json([
             'status' => 'success',
             'message' => 'Server status is ' . $request_action,
         ]);
+    }
+
+    private function getFirewalls()
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls";
+        $response = $this->getRequest($url);
+        $firewalls = $response->json()['firewalls'] ?? [];
+        
+        // Fetch detailed information for each firewall
+        foreach ($firewalls as &$firewall) {
+            $detailedFirewall = $this->getFirewall($firewall['id']);
+            if ($detailedFirewall) {
+                $firewall['applied_to'] = $detailedFirewall['applied_to'] ?? [];
+            }
+        }
+        
+        return $firewalls;
+    }
+
+    private function getFirewall($id)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls/" . $id;
+        $response = $this->getRequest($url);
+        return $response->json()['firewall'] ?? null;
+    }
+
+    private function createFirewall($name, $rules)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls";
+        $data = [
+            'name' => $name,
+            'rules' => json_decode($rules, true)
+        ];
+        return $this->postRequest($url, $data);
+    }
+
+    private function updateFirewall($id, $rules)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls/" . $id;
+        $data = [
+            'rules' => json_decode($rules, true)
+        ];
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->config('apiToken'),
+            'Content-Type' => 'application/json',
+        ])->put($url, $data);
+    }
+
+    private function deleteFirewall($id)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls/" . $id;
+        return $this->deleteRequest($url);
+    }
+
+    public function firewallPage($user, $params, $order, $product, $configurableOptions)
+    {
+        $server_id = $params['config']['server_id'];
+        $firewalls = $this->getFirewalls();
+        
+        return view('Extensions.Servers.HetznerCloud.views.firewall', [
+            'server_id' => $server_id,
+            'firewalls' => $firewalls,
+            'product' => $product
+        ]);
+    }
+
+    private function applyFirewall($firewall_id, $server_id)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls/" . $firewall_id . "/actions/apply_to_resources";
+        $data = [
+            'apply_to' => [
+                [
+                    'type' => 'server',
+                    'server' => [
+                        'id' => $server_id
+                    ]
+                ]
+            ]
+        ];
+        return $this->postRequest($url, $data);
+    }
+
+    private function removeFirewall($firewall_id, $server_id)
+    {
+        $url = "https://api.hetzner.cloud/v1/firewalls/" . $firewall_id . "/actions/remove_from_resources";
+        $data = [
+            'remove_from' => [
+                [
+                    'type' => 'server',
+                    'server' => [
+                        'id' => $server_id
+                    ]
+                ]
+            ]
+        ];
+        return $this->postRequest($url, $data);
+    }
+
+    public function handleFirewallAction(Request $request, OrderProduct $product)
+    {
+        $action = $request->input('action');
+        $firewall_id = $request->input('firewall_id');
+        
+        switch ($action) {
+            case 'create':
+                $name = $request->input('name');
+                $rules = $request->input('rules');
+                
+                // Validate rules format
+                $decodedRules = json_decode($rules, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    return response()->json(['error' => 'Invalid rules format'], 400);
+                }
+                
+                $response = $this->createFirewall($name, $rules);
+                break;
+            
+            case 'update':
+                $rules = $request->input('rules');
+                
+                // Validate rules format
+                $decodedRules = json_decode($rules, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    return response()->json(['error' => 'Invalid rules format'], 400);
+                }
+                
+                $response = $this->updateFirewall($firewall_id, $rules);
+                break;
+            
+            case 'delete':
+                $response = $this->deleteFirewall($firewall_id);
+                break;
+
+            case 'apply':
+                $server_id = $request->input('server_id');
+                if (!$server_id) {
+                    return response()->json(['error' => 'Server ID is required'], 400);
+                }
+                $response = $this->applyFirewall($firewall_id, $server_id);
+                break;
+
+            case 'remove':
+                $server_id = $request->input('server_id');
+                if (!$server_id) {
+                    return response()->json(['error' => 'Server ID is required'], 400);
+                }
+                $response = $this->removeFirewall($firewall_id, $server_id);
+                break;
+            
+            default:
+                return response()->json(['error' => 'Invalid action'], 400);
+        }
+
+        if ($response->successful()) {
+            return response()->json(['success' => true]);
+        }
+        
+        return response()->json(['error' => $response->body()], $response->status());
+    }
+
+    public function metricsPage($user, $params, $order, $product, $configurableOptions)
+    {
+        $server_id = $params['config']['server_id'];
+        
+        // Fetch metrics for the last hour (you can adjust the time range as needed)
+        $end = time();
+        $start = $end - 3600; // Last hour
+        
+        // Fetch CPU metrics
+        $metrics_cpu = $this->getMetrics($server_id, 'cpu', $start, $end);
+        
+        // Fetch memory metrics
+        $metrics_memory = $this->getMetrics($server_id, 'memory', $start, $end);
+        
+        // Fetch disk metrics
+        $metrics_disk = $this->getMetrics($server_id, 'disk', $start, $end);
+        
+        // Fetch network metrics
+        $metrics_network = $this->getMetrics($server_id, 'network', $start, $end);
+        
+        return view('Extensions.Servers.HetznerCloud.views.metrics', [
+            'server_id' => $server_id,
+            'metrics_cpu' => $metrics_cpu,
+            'metrics_memory' => $metrics_memory,
+            'metrics_disk' => $metrics_disk,
+            'metrics_network' => $metrics_network,
+            'product' => $product
+        ]);
+    }
+
+    private function getMetrics($server_id, $type, $start, $end)
+    {
+        $url = "https://api.hetzner.cloud/v1/servers/" . $server_id . "/metrics";
+        
+        $response = $this->getRequest($url . "?" . http_build_query([
+            'type' => $type,
+            'start' => date('c', $start),
+            'end' => date('c', $end),
+            'step' => '60' // 1-minute intervals
+        ]));
+
+        if ($response->successful()) {
+            return $response->json()['metrics'] ?? null;
+        }
+        
+        return null;
     }
 
     public function revdns(Request $request, OrderProduct $product)
@@ -362,4 +578,5 @@ class HetznerCloud extends Server
         return redirect()->back()->with('success', 'Reverse dns entry has been updated successfully');
     }
     
+
 }
