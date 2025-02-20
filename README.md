@@ -29,8 +29,9 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 - [x] Rebuild OS, aka. reinstall os
 - [x] Set Reverse DNS, (for IPv4)
 - [x] CPU, Disk & Network Metrics graphs
+- [x] Firewall Manager (Thanks to [@stijnnjakobs](https://github.com/stijnnjakobs)) 
 - [ ] VNC Console
-- [ ] Option for adding additional IPv4 and IPv6
+- [ ] Option for adding additional IPv4 and IPv6T
 - [ ] Option to add another volume or upgrade existing
 
 ---
@@ -48,11 +49,14 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 ![productExtensionConfig](https://ha1fdan.xyz/HetznerCloudExtension/4.png)
 <p>Metrics for cpu, disk and network usage (client side)</p>
 
-![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/5.png)
+![productConfig](https://ha1fdan.xyz/HetznerCloudExtension/5.png)
 <p>Example of config for a product (admin side)</p>
 
 ![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/6.png)
 <p>Settings for extension (admin side)</p>
+
+![firewallSettings](https://ha1fdan.xyz/HetznerCloudExtension/firewall.png)
+<p>Firewall Manager</p>
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
