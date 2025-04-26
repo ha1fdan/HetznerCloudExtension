@@ -1,9 +1,13 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Stars][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+![Paymenter Version][version-shield]
 [![MIT License][license-shield]][license-url]
 
 # Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+
+> **WARNING: THIS ADDON ONLY WORKS FOR Paymenter v0.9.x, this means that it does not work for v1.x!**
+
 > Note: This extension is in its early stages and may contain bugs.
 
 The extension uses Hetzners API to create Cloud Servers automatically.  The extension shows information about your server, like IPv4, IPv6 & temporarily root password for SSH.
@@ -62,6 +66,8 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 [contributors-shield]: https://img.shields.io/github/contributors/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
 [contributors-url]: https://github.com/ha1fdan/HetznerCloudExtension/graphs/contributors
 [stars-shield]: https://img.shields.io/github/stars/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
+[version-shield]: https://img.shields.io/badge/Paymenter_version-v0.9.x-blue?style=for-the-badge
+
 [stars-url]: https://github.com/ha1fdan/HetznerCloudExtension/stargazers
 [issues-shield]: https://img.shields.io/github/issues/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
 [issues-url]: https://github.com/ha1fdan/HetznerCloudExtension/issues
