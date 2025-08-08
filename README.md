@@ -7,6 +7,7 @@
 # Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
 
 > **WARNING: THIS ADDON ONLY WORKS FOR Paymenter v0.9.x, this means that it does not work for v1.x!**
+> **INFO: WORKING ON NEW VERSION FOR PAYMENTER v1.x! ~ [@nova](https://github.com/404nova)
 
 > Note: This extension is in its early stages and may contain bugs.
 
@@ -33,7 +34,7 @@ Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud ðŸ
 - [x] Rebuild OS, aka. reinstall os
 - [x] Set Reverse DNS, (for IPv4)
 - [x] CPU, Disk & Network Metrics graphs
-- [x] Firewall Manager (Thanks to [@stijnnjakobs](https://github.com/stijnnjakobs)) 
+- [x] Firewall Manager (Thanks to [@nova](https://github.com/404nova)) 
 - [ ] VNC Console
 - [ ] Option for adding additional IPv4 and IPv6T
 - [ ] Option to add another volume or upgrade existing
