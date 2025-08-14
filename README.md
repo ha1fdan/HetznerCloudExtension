@@ -4,70 +4,54 @@
 ![Paymenter Version][version-shield]
 [![MIT License][license-shield]][license-url]
 
-# Hetzner Cloud Extension for [paymenter.org](https://github.com/Paymenter/Paymenter)
+# Hetzner Extensions for [paymenter.org](https://github.com/Paymenter/Paymenter)
 
-> **WARNING: THIS ADDON ONLY WORKS FOR Paymenter v0.9.x, this means that it does not work for v1.x!**
-> **INFO: WORKING ON NEW VERSION FOR PAYMENTER v1.x! ~ [@nova](https://github.com/404nova)
+This repository contains Hetzner extensions for Paymenter, offering two separate extensions for different Hetzner services:
 
-> Note: This extension is in its early stages and may contain bugs.
+## 📦 Available Extensions (Paymenter v1.2)
 
-The extension uses Hetzners API to create Cloud Servers automatically.  The extension shows information about your server, like IPv4, IPv6 & temporarily root password for SSH.
+### **hetznerCLOUD** - Cloud Servers Extension
+Located in the `hetznerCLOUD/` folder, this extension allows Paymenter v1.2 to sell Hetzner Cloud servers. Built around the [api.hetzner.cloud](https://api.hetzner.cloud) API, it enables automated provisioning and management of cloud servers.
 
-Power controls for Starting, Stopping and Rebooting the server. You can also Force Stop the server or Reset the root Password if you get locked out. And if everything goes wrong you can Rebuild the OS. You can also set the Reverse DNS entry if needed.
+### **hetznerSTORAGE** - Storage Boxes Extension  
+Located in the `hetznerSTORAGE/` folder, this extension allows Paymenter v1.2 to sell Hetzner Storage Boxes. Built around the [api.hetzner.com](https://api.hetzner.com) API, it enables automated provisioning and management of storage solutions.
 
-You can also see metrics for CPU, Disk and Network usage.
-<br/>Supports configurable options for: `location`, `image` and `hostname`.
+## 🔄 Migration from v0.9
 
-If you want to implement new features check out Hetzner Cloud Docs: https://docs.hetzner.cloud/ & make a pull request ❤️
+These new extensions are complete rewrites of the original Hetzner Cloud extension (now archived in the `archive/` folder) and are designed specifically for **Paymenter v1.2**. The old v0.9 extension in the archive folder is no longer maintained and only worked with Paymenter v0.9.x.
 
-Get the extension at: https://market.paymenter.org/extensions/27/HetznerCloud 🎉
-<br/>For support or feature requests please message [@ha1fdan](https://ha1fdan.xyz/discord) on discord.
+> **Note:** These extensions are designed for the newest version of Paymenter (v1.2) and replace the legacy v0.9 extension.
 
----
+## 🚀 Features Overview
 
-## Features
-- [x] Configurable settings for location & os-image
-- [x] Shows IPv4 & IPv6
-- [x] Shows Temporarily root Password
-- [x] Reset root Password
-- [x] Start, Stop, Force Stop & Reset Server
-- [x] Rebuild OS, aka. reinstall os
-- [x] Set Reverse DNS, (for IPv4)
-- [x] CPU, Disk & Network Metrics graphs
-- [x] Firewall Manager (Thanks to [@nova](https://github.com/404nova)) 
-- [ ] VNC Console
-- [ ] Option for adding additional IPv4 and IPv6T
-- [ ] Option to add another volume or upgrade existing
+Both extensions provide comprehensive management capabilities for their respective Hetzner services, including automated provisioning, monitoring, and control features designed specifically for Paymenter v1.2.
+
+### Development & Contributions
+If you want to implement new features, check out:
+- **Cloud Servers**: [Hetzner Cloud API Docs](https://docs.hetzner.cloud/) 
+- **Storage Boxes**: [Hetzner Storage API Docs](https://docs.hetzner.com/)
+
+Feel free to make a pull request! ❤️
+
+For support or feature requests please message [@404nova or @ha1fdan](https://discord.gg/7rytXKvxMt) on discord.
+
+## 📋 Legacy Extension (Archive)
+
+The `archive/` folder contains the original Hetzner Cloud extension that was built for Paymenter v0.9.x. This extension is no longer maintained and has been completely rewritten and split into two separate extensions for Paymenter v1.2.
 
 ---
 
 ## Screenshots
-![configurableOptions](https://ha1fdan.xyz/HetznerCloudExtension/1.png)
-<p>Support for configurable options (client side)</p>
+![configurableOptions](archive/images/front-page.png)
+<p>Front page</p>
 
-![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/2.png)
-<p>Server Information (client side)</p>
-
-![productOrderPage](https://ha1fdan.xyz/HetznerCloudExtension/3.png)
-<p>Power Control & Status (client side)</p>
-
-![productExtensionConfig](https://ha1fdan.xyz/HetznerCloudExtension/4.png)
-<p>Metrics for cpu, disk and network usage (client side)</p>
-
-![productConfig](https://ha1fdan.xyz/HetznerCloudExtension/5.png)
-<p>Example of config for a product (admin side)</p>
-
-![extensionSettings](https://ha1fdan.xyz/HetznerCloudExtension/6.png)
-<p>Settings for extension (admin side)</p>
-
-![firewallSettings](https://ha1fdan.xyz/HetznerCloudExtension/firewall.png)
-<p>Firewall Manager</p>
-
+![productOrderPage](archive/images/rebuild-modal.png)
+<p>Rebuild modal</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
 [contributors-url]: https://github.com/ha1fdan/HetznerCloudExtension/graphs/contributors
 [stars-shield]: https://img.shields.io/github/stars/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
-[version-shield]: https://img.shields.io/badge/Paymenter_version-v0.9.x-blue?style=for-the-badge
+[version-shield]: https://img.shields.io/badge/Paymenter_version-v1.2-blue?style=for-the-badge
 
 [stars-url]: https://github.com/ha1fdan/HetznerCloudExtension/stargazers
 [issues-shield]: https://img.shields.io/github/issues/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
