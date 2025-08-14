@@ -41,12 +41,21 @@ The `archive/` folder contains the original Hetzner Cloud extension that was bui
 
 ---
 
-## Screenshots
-![configurableOptions](archive/images/front-page.png)
+## 📸 Screenshots
+
+### hetznerCLOUD Extension (Cloud Servers)
+![storageMainpage](archive/images/front-page.png)
 <p>Front page</p>
 
-![productOrderPage](archive/images/rebuild-modal.png)
+![rebuildModalStorage](archive/images/rebuild-modal.png)
 <p>Rebuild modal</p>
+
+### hetznerSTORAGE Extension (Storage Boxes)
+![storageMainPage](archive/images/storage-page.png)
+<p>Storage Box Information & Management</p>
+
+![accessStorage](archive/images/access-storage.png)
+<p>Storage Box Configuration</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/ha1fdan/HetznerCloudExtension.svg?style=for-the-badge
 [contributors-url]: https://github.com/ha1fdan/HetznerCloudExtension/graphs/contributors
